@@ -1,8 +1,7 @@
+import 'dotenv/config.js'
 import pg from 'pg'
 
 const { Pool } = pg
-
-console.log(process.env.POSTGRES_PASSWORD)
 
 export const pool = new Pool({
     user: process.env.POSTGRES_USER,
@@ -16,10 +15,10 @@ export const PostgresHelper = {
     query: async (query, params) => {
         const client = await pool.connect()
 
-        const result = await client.query(query, params)
+        const results = await client.query(query, params)
 
         await client.release()
 
-        return result.rows
+        return results.rows
     },
 }
