@@ -16,7 +16,7 @@ export class CreateUserUseCase {
         //INSERT UDER ON DB (POSTGRES)
         const user = {
             ...createUserParams,
-            ID: userId,
+            id: userId,
             password: passwordHash,
         }
 
