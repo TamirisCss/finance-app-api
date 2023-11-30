@@ -1,4 +1,4 @@
-import { badRequest } from './http'
+import { badRequest } from './http.js'
 import validator from 'validator'
 
 export const invalidPasswordResponse = () => {
