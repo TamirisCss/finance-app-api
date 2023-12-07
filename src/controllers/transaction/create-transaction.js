@@ -1,32 +1,28 @@
 import validator from 'validator'
 import {
-    serverError,
     badRequest,
     checkIfIdIsValid,
-    invalidIdResponse,
     created,
+    invalidIdResponse,
+    serverError,
 } from '../helpers/index.js'
 
 export class CreateTransactionController {
-    constructor({ createTransactionUseCase }) {
+    constructor(createTransactionUseCase) {
         this.createTransactionUseCase = createTransactionUseCase
     }
 
-    async execute(hhtpRequest) {
+    async execute(httpRequest) {
         try {
-            const params = hhtpRequest.body
+            const params = httpRequest.body
 
-            const requiredFields = [
-                'id',
-                'user_id',
-                'name',
-                'date',
-                'amount',
-                'type',
-            ]
+            const requiredFields = ['user_id', 'name', 'date', 'amount', 'type']
 
             for (const field of requiredFields) {
-                if (!params[field] || params[field].trim().lenght === 0) {
+                if (
+                    !params[field] ||
+                    params[field].toString().trim().length === 0
+                ) {
                     return badRequest({ message: `Missing param: ${field}` })
                 }
             }
@@ -77,7 +73,7 @@ export class CreateTransactionController {
 
             return created(transaction)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             return serverError()
         }
     }
