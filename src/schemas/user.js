@@ -37,3 +37,7 @@ export const createUserSchema = z.object({
             message: 'password must be at least 6 characters',
         }),
 })
+
+export const updateUserSchema = createUserSchema.partial().strict({
+    message: 'Some provided fields are invalid',
+})
