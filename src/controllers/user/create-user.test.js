@@ -60,4 +60,37 @@ describe('Create User Controller', () => {
 
         expect(result.statusCode).toBe(400)
     })
+
+    it('should return 400 when email is not provided', async () => {
+        const createUserUseCase = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(createUserUseCase)
+        const httpRequest = {
+            body: {
+                first_name: 'John',
+                last_name: 'Doe',
+                password: '123456',
+            },
+        }
+
+        const result = await createUserController.execute(httpRequest)
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when email is not valid', async () => {
+        const createUserUseCase = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(createUserUseCase)
+        const httpRequest = {
+            body: {
+                first_name: 'John',
+                last_name: 'Doe',
+                email: 'johndoe',
+                password: '123456',
+            },
+        }
+
+        const result = await createUserController.execute(httpRequest)
+
+        expect(result.statusCode).toBe(400)
+    })
 })
