@@ -16,7 +16,7 @@ export const serverError = () => {
     return {
         statusCode: 500,
         body: {
-            ErrorMessage: 'Internal server error',
+            message: 'Internal server error',
         },
     }
 }
