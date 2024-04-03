@@ -35,4 +35,70 @@ describe('Create Transaction Controller', () => {
 
         expect(result.statusCode).toBe(201)
     })
+
+    //tests for missing fields
+    it('should return 400 when user_id is missing', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                user_id: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when name is missing', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                name: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when date is missing', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                date: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when type is missing', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                type: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when amount is missing', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                amount: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
 })
