@@ -36,4 +36,59 @@ describe('UpdateUserController', () => {
 
         expect(result.statusCode).toBe(200)
     })
+
+    it('should return 400 when updating a user with invalid email', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            params: httpRequest.params,
+            body: {
+                ...httpRequest.body,
+                email: 'invalid_email',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when updating a user with invalid password', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            params: httpRequest.params,
+            body: {
+                ...httpRequest.body,
+                password: faker.internet.password({ length: 5 }),
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when updating a user with invalid id', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            params: {
+                userId: 'invalid_id',
+            },
+            body: httpRequest.body,
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when updating a user with invalid field', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            params: httpRequest.params,
+            body: {
+                ...httpRequest.body,
+                invalid_field: 'invalid_field',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
 })
