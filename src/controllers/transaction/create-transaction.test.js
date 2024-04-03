@@ -36,7 +36,6 @@ describe('Create Transaction Controller', () => {
         expect(result.statusCode).toBe(201)
     })
 
-    //tests for missing fields
     it('should return 400 when user_id is missing', async () => {
         const { sut } = makeSut()
 
@@ -96,6 +95,46 @@ describe('Create Transaction Controller', () => {
             body: {
                 ...baseHttpRequest.body,
                 amount: undefined,
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    //tests for invalid values date. type and amount
+    it('should return 400 when date is invalid', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                date: 'invalid-date',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when type is is not EXPENSE, EARNING or INVESTMENT', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                type: 'invalid_type',
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when amount is invalid', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                amount: 'invalid-amount',
             },
         })
 
