@@ -93,4 +93,16 @@ describe('Update Transaction Controller', () => {
 
         expect(response.statusCode).toBe(400)
     })
+
+    it('should return 500 when UpdateTransactionUseCase throws an error', async () => {
+        const { sut, updateTransactionUseCase } = makeSut()
+
+        jest.spyOn(updateTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const response = await sut.execute(baseHttpRequest)
+
+        expect(response.statusCode).toBe(500)
+    })
 })
