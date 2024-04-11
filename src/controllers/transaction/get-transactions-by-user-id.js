@@ -30,9 +30,7 @@ export class GetTransactionsByUserIdController {
 
             //call userCase
             const transactions =
-                await this.getTransactionsByUserIdUseCase.execute({
-                    userId,
-                })
+                await this.getTransactionsByUserIdUseCase.execute(userId)
 
             //return response hhtp
             return ok(transactions)
