@@ -1,7 +1,8 @@
+import { ZodError } from 'zod'
+import { updateTransactionSchema } from '../../schemas/transaction.js'
 import {
     badRequest,
     checkIfIdIsValid,
-    checkIfTypeIsValid,
     invalidIdResponse,
     ok,
     serverError,
@@ -22,25 +23,7 @@ export class UpdateTransactionController {
 
             const params = httpRequest.body
 
-            const allowedFields = ['name', 'date', 'amount', 'type']
-
-            const someFieldIsNotAllowed = Object.keys(params).some(
-                (field) => !allowedFields.includes(field),
-            )
-
-            if (someFieldIsNotAllowed) {
-                return badRequest({
-                    message: 'Some provided field is not allowed.',
-                })
-            }
-
-            if (params.amount) {
-                const typeIsValid = checkIfTypeIsValid(params.type)
-
-                if (!typeIsValid) {
-                    return invalidIdResponse()
-                }
-            }
+            await updateTransactionSchema.parseAsync(params)
 
             const transaction = await this.updateTransactionUseCase.execute(
                 httpRequest.params.transactionId,
@@ -49,6 +32,11 @@ export class UpdateTransactionController {
 
             return ok(transaction)
         } catch (error) {
+            if (error instanceof ZodError) {
+                return badRequest({
+                    message: error.errors[0].message,
+                })
+            }
             console.error(error)
 
             return serverError()
