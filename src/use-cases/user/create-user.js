@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
-
 import { EmailAlreadyInUseError } from '../../errors/user.js'
 
 export class CreateUserUseCase {
@@ -7,10 +5,12 @@ export class CreateUserUseCase {
         getUserByEmailRepository,
         createUserRepository,
         passwordHasherAdapter,
+        IdGeneratorAdapter,
     ) {
         this.getUserByEmailRepository = getUserByEmailRepository
         this.createUserRepository = createUserRepository
         this.passwordHasherAdapter = passwordHasherAdapter
+        this.IdGeneratorAdapter = IdGeneratorAdapter
     }
 
     async execute(createUserParams) {
@@ -21,7 +21,7 @@ export class CreateUserUseCase {
             throw new EmailAlreadyInUseError(createUserParams.email)
         }
 
-        const userId = uuidv4()
+        const userId = this.IdGeneratorAdapter.execute()
 
         const hashedPassword = await this.passwordHasherAdapter.execute(
             createUserParams.password,
