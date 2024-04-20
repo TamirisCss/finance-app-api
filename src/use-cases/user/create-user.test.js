@@ -80,7 +80,6 @@ describe('Create User Use Case', () => {
     })
 
     it('should call IdGeneratorAdapter to generate a random id', async () => {
-        // arrange
         const { sut, idGeneratorAdapter, createUserRepository } = makeSut()
         const idGeneratorSpy = jest.spyOn(idGeneratorAdapter, 'execute')
         const createUserRepositorySpy = jest.spyOn(
@@ -88,11 +87,27 @@ describe('Create User Use Case', () => {
             'execute',
         )
 
-        // act
         await sut.execute(user)
 
-        // assert
         expect(idGeneratorSpy).toHaveBeenCalled()
+        expect(createUserRepositorySpy).toHaveBeenCalledWith({
+            ...user,
+            password: 'hashed_password',
+            id: 'generated_id',
+        })
+    })
+
+    it('should call PasswordHasherAdapter to cryptograph password', async () => {
+        const { sut, passwordHasherAdapter, createUserRepository } = makeSut()
+        const passwordHasherSpy = jest.spyOn(passwordHasherAdapter, 'execute')
+        const createUserRepositorySpy = jest.spyOn(
+            createUserRepository,
+            'execute',
+        )
+
+        await sut.execute(user)
+
+        expect(passwordHasherSpy).toHaveBeenCalledWith(user.password)
         expect(createUserRepositorySpy).toHaveBeenCalledWith({
             ...user,
             password: 'hashed_password',
