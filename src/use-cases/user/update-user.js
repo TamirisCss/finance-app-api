@@ -36,7 +36,10 @@ export class UpdateUserUseCase {
             user.password = hashedPassword
         }
         //2- call repository to update user
-        const updatedUser = await this.updateUserUseCase.execute(userId, user)
+        const updatedUser = await this.updateUserRepository.execute(
+            userId,
+            user,
+        )
 
         return updatedUser
     }
