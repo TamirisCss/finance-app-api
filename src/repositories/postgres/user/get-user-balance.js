@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client'
 import { prisma } from '../../../../prisma/prisma.js'
+import { TransactionType } from '@prisma/client'
 
 export class PostgresGetUserBalanceRepository {
     async execute(userId) {
@@ -8,7 +9,7 @@ export class PostgresGetUserBalanceRepository {
         } = await prisma.transaction.aggregate({
             where: {
                 user_id: userId,
-                type: 'EXPENSE',
+                type: TransactionType.EXPENSE,
             },
             _sum: {
                 amount: true,
@@ -20,7 +21,7 @@ export class PostgresGetUserBalanceRepository {
         } = await prisma.transaction.aggregate({
             where: {
                 user_id: userId,
-                type: 'EARNING',
+                type: TransactionType.EARNING,
             },
             _sum: {
                 amount: true,
@@ -32,7 +33,7 @@ export class PostgresGetUserBalanceRepository {
         } = await prisma.transaction.aggregate({
             where: {
                 user_id: userId,
-                type: 'INVESTMENT',
+                type: TransactionType.INVESTMENT,
             },
             _sum: {
                 amount: true,
