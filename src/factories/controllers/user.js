@@ -25,7 +25,7 @@ import {
     IdGeneratorAdapter,
 } from '../../adapters/index.js'
 
-export const makeGetUserByController = () => {
+export const makeGetUserByIdController = () => {
     const getUserByIdRepository = new PostgresGetUserByIdRepository()
 
     const getUserByIdUseCase = new GetUserByIdUseCase(getUserByIdRepository)
