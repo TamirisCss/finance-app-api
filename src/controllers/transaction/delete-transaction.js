@@ -4,7 +4,7 @@ import {
     invalidIdResponse,
     ok,
     serverError,
-    transactionNotFoundResponse,
+    notFound,
 } from '../helpers/index.js'
 
 export class DeleteTransactionController {
@@ -28,7 +28,7 @@ export class DeleteTransactionController {
             return ok(deletedTransaction)
         } catch (error) {
             if (error instanceof TransactionNotFoundError) {
-                return transactionNotFoundResponse()
+                return notFound({ message: 'Transaction not found.' })
             }
 
             console.error(error)
