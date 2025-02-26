@@ -1,25 +1,26 @@
 import { ZodError } from 'zod'
 import { updateTransactionSchema } from '../../schemas/transaction.js'
 import {
-    badRequest,
     checkIfIdIsValid,
     invalidIdResponse,
-    notFound,
-    ok,
     serverError,
+    ok,
+    badRequest,
+    transactionNotFoundResponse,
+    forbidden,
 } from '../helpers/index.js'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
+import { ForbiddenError } from '../../errors/user.js'
 
 export class UpdateTransactionController {
     constructor(updateTransactionUseCase) {
         this.updateTransactionUseCase = updateTransactionUseCase
     }
-
     async execute(httpRequest) {
         try {
-            const isIdValid = checkIfIdIsValid(httpRequest.params.transactionId)
+            const idIsValid = checkIfIdIsValid(httpRequest.params.transactionId)
 
-            if (!isIdValid) {
+            if (!idIsValid) {
                 return invalidIdResponse()
             }
 
@@ -31,7 +32,7 @@ export class UpdateTransactionController {
                 httpRequest.params.transactionId,
                 params,
             )
-            console.log(transaction)
+
             return ok(transaction)
         } catch (error) {
             if (error instanceof ZodError) {
@@ -41,7 +42,11 @@ export class UpdateTransactionController {
             }
 
             if (error instanceof TransactionNotFoundError) {
-                return notFound({ message: 'Transaction not found.' })
+                return transactionNotFoundResponse()
+            }
+
+            if (error instanceof ForbiddenError) {
+                return forbidden()
             }
 
             console.error(error)
