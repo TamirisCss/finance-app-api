@@ -4,6 +4,8 @@ import { faker } from '@faker-js/faker'
 import { transaction } from '../../tests'
 
 describe('Get Transaction By User ID Controller', () => {
+    const from = '2024-01-01'
+    const to = '2024-01-31'
     class GetUserByIdUseCaseStub {
         async execute() {
             return [transaction]
@@ -20,7 +22,7 @@ describe('Get Transaction By User ID Controller', () => {
         const { sut } = makeSut()
 
         const response = await sut.execute({
-            query: { userId: faker.string.uuid() },
+            query: { userId: faker.string.uuid(), from, to },
         })
 
         expect(response.statusCode).toBe(200)
@@ -40,7 +42,7 @@ describe('Get Transaction By User ID Controller', () => {
         const { sut } = makeSut()
 
         const response = await sut.execute({
-            query: { userId: 'invalid_user_id' },
+            query: { userId: 'invalid_user_id', from, to },
         })
 
         expect(response.statusCode).toBe(400)
@@ -54,7 +56,7 @@ describe('Get Transaction By User ID Controller', () => {
             .mockRejectedValueOnce(new UserNotFoundError())
 
         const result = await sut.execute({
-            query: { userId: faker.string.uuid() },
+            query: { userId: faker.string.uuid(), from, to },
         })
 
         expect(result.statusCode).toBe(404)
@@ -67,7 +69,7 @@ describe('Get Transaction By User ID Controller', () => {
             .mockRejectedValueOnce(new Error())
 
         const response = await sut.execute({
-            query: { userId: faker.string.uuid() },
+            query: { userId: faker.string.uuid(), from, to },
         })
 
         expect(response.statusCode).toBe(500)
@@ -80,7 +82,7 @@ describe('Get Transaction By User ID Controller', () => {
         const userId = faker.string.uuid()
 
         await sut.execute({
-            query: { userId: userId },
+            query: { userId: userId, from, to },
         })
 
         expect(executeSpy).toHaveBeenCalledWith(userId)
