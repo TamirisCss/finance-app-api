@@ -7,7 +7,6 @@ import { TransactionType } from '@prisma/client'
 describe('User Routes E2E Tests', () => {
     const from = '2024-01-01'
     const to = '2024-01-31'
-
     it('POST /api/users should return 201 when user is created', async () => {
         const response = await request(app)
             .post('/api/users')
@@ -19,7 +18,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.status).toBe(201)
     })
 
-    it('GET /api/users should return 200 when user is found', async () => {
+    it('GET /api/users/me should return 200 if user is authenticated', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({
@@ -28,14 +27,14 @@ describe('User Routes E2E Tests', () => {
             })
 
         const response = await request(app)
-            .get(`/api/users`)
+            .get(`/api/users/me`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
 
         expect(response.status).toBe(200)
-        expect(response.body.id).toEqual(createdUser.id)
+        expect(response.body.id).toBe(createdUser.id)
     })
 
-    it('PATCH /api/users should return 200 when user is updated', async () => {
+    it('PATCH /api/users/me should return 200 when user is updated', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({
@@ -51,7 +50,7 @@ describe('User Routes E2E Tests', () => {
         }
 
         const response = await request(app)
-            .patch(`/api/users`)
+            .patch(`/api/users/me`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
             .send(updateUserParams)
 
@@ -62,7 +61,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.body.password).not.toBe(createdUser.password)
     })
 
-    it('DELETE /api/users should return 200 when user is deleted', async () => {
+    it('DELETE /api/users/me should return 200 when user is deleted', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({
@@ -71,14 +70,14 @@ describe('User Routes E2E Tests', () => {
             })
 
         const response = await request(app)
-            .delete(`/api/users`)
+            .delete(`/api/users/me`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
 
         expect(response.status).toBe(200)
-        expect(response.body.id).toEqual(createdUser.id)
+        expect(response.body.id).toBe(createdUser.id)
     })
 
-    it('GET /api/users/balance should return 200 and correct balance', async () => {
+    it('GET /api/users/me/balance should return 200 and correct balance', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({
@@ -114,13 +113,13 @@ describe('User Routes E2E Tests', () => {
             .send({
                 user_id: createdUser.id,
                 name: faker.commerce.productName(),
-                date: new Date(from),
+                date: new Date(to),
                 type: TransactionType.INVESTMENT,
                 amount: 2000,
             })
 
         const response = await request(app)
-            .get(`/api/users/balance?from=${from}&to=${to}`)
+            .get(`/api/users/me/balance?from=${from}&to=${to}`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
 
         expect(response.status).toBe(200)
@@ -161,6 +160,7 @@ describe('User Routes E2E Tests', () => {
                 ...user,
                 id: undefined,
             })
+
         const response = await request(app).post('/api/users/login').send({
             email: createdUser.email,
             password: user.password,
