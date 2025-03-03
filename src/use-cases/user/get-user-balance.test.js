@@ -31,10 +31,13 @@ describe('GetUserBalanceUseCase', () => {
         }
     }
 
+    const from = '2024-01-01'
+    const to = '2024-12-31'
+
     it('should get user balance successfully', async () => {
         const { sut } = makeSut()
 
-        const result = await sut.execute(faker.string.uuid())
+        const result = await sut.execute(faker.string.uuid(), from, to)
 
         expect(result).toEqual(userBalance)
     })
@@ -46,7 +49,7 @@ describe('GetUserBalanceUseCase', () => {
             .mockResolvedValue(null)
         const userId = faker.string.uuid()
 
-        const promise = sut.execute(userId)
+        const promise = sut.execute(userId, from, to)
 
         await expect(promise).rejects.toThrow(new UserNotFoundError(userId))
     })
@@ -59,7 +62,7 @@ describe('GetUserBalanceUseCase', () => {
             'execute',
         )
 
-        await sut.execute(userId)
+        await sut.execute(userId, from, to)
 
         expect(executeSpy).toHaveBeenCalledWith(userId)
     })
@@ -72,9 +75,9 @@ describe('GetUserBalanceUseCase', () => {
             'execute',
         )
 
-        await sut.execute(userId)
+        await sut.execute(userId, from, to)
 
-        expect(executeSpy).toHaveBeenCalledWith(userId)
+        expect(executeSpy).toHaveBeenCalledWith(userId, from, to)
     })
 
     it('should throw if GetUserByIdRepository throws', async () => {
@@ -83,7 +86,7 @@ describe('GetUserBalanceUseCase', () => {
             .spyOn(getUserByIdRepository, 'execute')
             .mockRejectedValue(new Error())
 
-        const promise = sut.execute(faker.string.uuid())
+        const promise = sut.execute(faker.string.uuid(), from, to)
 
         await expect(promise).rejects.toThrow()
     })
@@ -94,7 +97,7 @@ describe('GetUserBalanceUseCase', () => {
             .spyOn(getUserBalanceRepository, 'execute')
             .mockRejectedValue(new Error())
 
-        const promise = sut.execute(faker.string.uuid())
+        const promise = sut.execute(faker.string.uuid(), from, to)
 
         await expect(promise).rejects.toThrow()
     })
