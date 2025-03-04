@@ -3,20 +3,33 @@ import { DeleteTransactionUseCase } from './delete-transaction'
 import { transaction } from '../../tests'
 
 describe('DeleteTransactionUseCase', () => {
+    const user_id = faker.string.uuid()
+
     class DeleteTransactionRepositoryStub {
         async execute() {
-            return transaction
+            return { ...transaction, user_id }
+        }
+    }
+    class GetTransactionByIdRepositoryStub {
+        async execute() {
+            return { ...transaction, user_id }
         }
     }
 
     const makeSut = () => {
         const deleteTransactionRepository =
             new DeleteTransactionRepositoryStub()
-        const sut = new DeleteTransactionUseCase(deleteTransactionRepository)
+        const getTransactionByIdRepository =
+            new GetTransactionByIdRepositoryStub()
+        const sut = new DeleteTransactionUseCase(
+            deleteTransactionRepository,
+            getTransactionByIdRepository,
+        )
 
         return {
             sut,
             deleteTransactionRepository,
+            getTransactionByIdRepository,
         }
     }
 
@@ -24,9 +37,9 @@ describe('DeleteTransactionUseCase', () => {
         const { sut } = makeSut()
         const id = faker.string.uuid()
 
-        const result = await sut.execute(id)
+        const result = await sut.execute(id, user_id)
 
-        expect(result).toEqual(transaction)
+        expect(result).toEqual({ ...transaction, user_id })
     })
 
     it('should call DeleteTransactionRepository with correct params', async () => {
@@ -37,7 +50,7 @@ describe('DeleteTransactionUseCase', () => {
         )
         const id = faker.string.uuid()
 
-        await sut.execute(id)
+        await sut.execute(id, user_id)
 
         expect(deleteTransactionRepositorySpy).toHaveBeenCalledWith(id)
     })
@@ -49,7 +62,7 @@ describe('DeleteTransactionUseCase', () => {
             .mockRejectedValueOnce(new Error())
         const id = faker.string.uuid()
 
-        const promise = sut.execute(id)
+        const promise = sut.execute(id, user_id)
 
         await expect(promise).rejects.toThrow()
     })
