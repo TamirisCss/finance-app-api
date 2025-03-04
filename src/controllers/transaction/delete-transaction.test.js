@@ -20,7 +20,10 @@ describe('Delete Transaction Controller', () => {
         const { sut } = makeSut()
 
         const response = await sut.execute({
-            params: { transactionId: faker.string.uuid() },
+            params: {
+                transactionId: faker.string.uuid(),
+                user_id: faker.string.uuid(),
+            },
         })
 
         expect(response.statusCode).toBe(200)
@@ -30,7 +33,10 @@ describe('Delete Transaction Controller', () => {
         const { sut } = makeSut()
 
         const response = await sut.execute({
-            params: { transactionId: 'invalid_id' },
+            params: {
+                transactionId: 'invalid_id',
+                user_id: faker.string.uuid(),
+            },
         })
 
         expect(response.statusCode).toBe(400)
@@ -43,7 +49,10 @@ describe('Delete Transaction Controller', () => {
             .mockRejectedValueOnce(new TransactionNotFoundError())
 
         const response = await sut.execute({
-            params: { transactionId: faker.string.uuid() },
+            params: {
+                transactionId: faker.string.uuid(),
+                user_id: faker.string.uuid(),
+            },
         })
 
         expect(response.statusCode).toBe(404)
@@ -56,7 +65,10 @@ describe('Delete Transaction Controller', () => {
             .mockRejectedValueOnce(new Error())
 
         const response = await sut.execute({
-            params: { transactionId: faker.string.uuid() },
+            params: {
+                transactionId: faker.string.uuid(),
+                user_id: faker.string.uuid(),
+            },
         })
 
         expect(response.statusCode).toBe(500)
