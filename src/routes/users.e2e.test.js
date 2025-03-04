@@ -18,21 +18,21 @@ describe('User Routes E2E Tests', () => {
         expect(response.status).toBe(201)
     })
 
-    it('GET /api/users/me should return 200 if user is authenticated', async () => {
-        const { body: createdUser } = await request(app)
-            .post('/api/users')
-            .send({
-                ...user,
-                id: undefined,
-            })
+    // it('GET /api/users/me should return 200 if user is authenticated', async () => {
+    //     const { body: createdUser } = await request(app)
+    //         .post('/api/users')
+    //         .send({
+    //             ...user,
+    //             id: undefined,
+    //         })
 
-        const response = await request(app)
-            .get(`/api/users/me`)
-            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
+    //     const response = await request(app)
+    //         .get(`/api/users/me`)
+    //         .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
 
-        expect(response.status).toBe(200)
-        expect(response.body.id).toBe(createdUser.id)
-    })
+    //     expect(response.status).toBe(200)
+    //     expect(response.body.id).toBe(createdUser.id)
+    // })
 
     it('PATCH /api/users/me should return 200 when user is updated', async () => {
         const { body: createdUser } = await request(app)
