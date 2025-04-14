@@ -12,7 +12,7 @@ import { auth } from '../middlewares/auth.js'
 
 export const usersRouter = Router()
 
-usersRouter.get('/', auth, async (request, response) => {
+usersRouter.get('/me', auth, async (request, response) => {
     const getUserByIdController = makeGetUserByIdController()
 
     console.log('authenticated user id', request.userId)
